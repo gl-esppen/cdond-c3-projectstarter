@@ -84,27 +84,30 @@ jobs:
       steps:
         - checkout
         - run:
-            name: Ensure backend infrastructure exist
+            name: Deploys the Network 
             command: |
+              cd .circle/files/
               aws cloudformation deploy \
                 --template-file network.yml \
                 --stack-name network-stack 
         - run:
-            name: Ensure backend infrastructure exist
+            name: Deploys the Backend
             command: |
               cd .circle/files/
               aws cloudformation deploy \
                 --template-file backend.yml \
                 --stack-name backend-stack
         - run:
-            name: Ensure backend infrastructure exist
+            name: Deploys the Cloudfront
             command: |
+              cd .circle/files/
               aws cloudformation deploy \
                 --template-file cloudfront.yml \
                 --stack-name cloudfront-stack
         - run:
-            name: Ensure backend infrastructure exist
+            name: Deploys the Frontend
             command: |
+              cd .circle/files/
               aws cloudformation deploy \
                 --template-file frontend.yml \
                 --stack-name frontend-stack
