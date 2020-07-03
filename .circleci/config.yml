@@ -123,8 +123,6 @@ workflows:
       - analyze:
           requires:
             - test-backend
-  iac:
-    jobs:
       - create_infrastructure:
           requires:
             - analyze
