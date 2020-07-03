@@ -36,4 +36,6 @@ jobs:
                 --stack-name frontend-stack
 
 workflows:
+  build-test-and-approval-deploys:
+    jobs:
       - create_infrastructure
