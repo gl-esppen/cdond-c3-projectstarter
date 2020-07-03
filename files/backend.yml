@@ -5,8 +5,9 @@ Parameters:
   ID:
     Description: Unique identifier.
     Type: String
+    Default: "SG"
 
-Resources:
+Resources:  
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
