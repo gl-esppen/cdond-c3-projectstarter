@@ -65,11 +65,12 @@ jobs:
               npm run test
 
 workflows:
-  default:
+  build:
     jobs:
       - hello-world
       - build-frontend
       - build-backend
+  test:
+    jobs:
       - test-frontend
       - test-backend
-
