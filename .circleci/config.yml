@@ -78,6 +78,37 @@ jobs:
               cd frontend
               npm audit fix --audit-level=critical --force
 
+create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure backend infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file network.yml \
+              --stack-name network-stack 
+      - run:
+          name: Ensure backend infrastructure exist
+          command: |
+            cd .circle/files/
+            aws cloudformation deploy \
+              --template-file backend.yml \
+              --stack-name backend-stack
+      - run:
+          name: Ensure backend infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudfront.yml \
+              --stack-name cloudfront-stack
+      - run:
+          name: Ensure backend infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file frontend.yml \
+              --stack-name frontend-stack
+
 workflows:
   build-test-and-approval-deploys:
     jobs:
@@ -92,3 +123,8 @@ workflows:
       - analyze:
           requires:
             - test-backend
+  iac:
+    jobs:
+      - create_infrastructure:
+          requires:
+            - analyze
