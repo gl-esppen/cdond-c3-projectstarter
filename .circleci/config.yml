@@ -10,7 +10,7 @@ jobs:
           name: Say Hello
           command: |
             echo "Hello World"
-            
+
   build-frontend:
     docker:
       - image: circleci/node:13.8.0 
@@ -46,4 +46,6 @@ workflows:
   default:
     jobs:
       - hello-world
+      - frontend-build
+      - backend-build
 
