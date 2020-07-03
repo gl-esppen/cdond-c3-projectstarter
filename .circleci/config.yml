@@ -64,6 +64,20 @@ jobs:
               npm install
               npm run test
 
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd backend
+              npm audit --audit-level=critical
+      - run:
+          command: |
+              cd frontend
+              npm audit --audit-level=critical
+
 workflows:
   build-test-and-approval-deploys:
     jobs:
@@ -75,3 +89,6 @@ workflows:
       - test-backend:
           requires:
             - build-backend
+      - analyze:
+          requires:
+            - test-backend
