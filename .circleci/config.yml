@@ -21,20 +21,19 @@ jobs:
                 --template-file backend.yml \
                 --stack-name backend-stack
         - run:
-            name: Deploys the Cloudfront
-            command: |
-              cd files
-              aws cloudformation deploy \
-                --template-file cloudfront.yml \
-                --stack-name cloudfront-stack
-        - run:
             name: Deploys the Frontend
             command: |
               cd files
               aws cloudformation deploy \
                 --template-file frontend.yml \
                 --stack-name frontend-stack
-
+        - run:
+            name: Deploys the Cloudfront
+            command: |
+              cd files
+              aws cloudformation deploy \
+                --template-file cloudfront.yml \
+                --stack-name cloudfront-stack
 
 workflows:
   build-test-and-approval-deploys:
