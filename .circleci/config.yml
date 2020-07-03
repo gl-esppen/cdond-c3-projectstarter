@@ -65,13 +65,10 @@ jobs:
               npm run test
 
 workflows:
-  build-test-and-approval-deploy:
+  build-test-and-approval-deploys:
     jobs:
-      - hello-world
       - build-frontend
-      - build-backend:
-          requires:
-            - build-frontend
+      - build-backend
       - test-frontend:
           requires:
             - build-frontend
