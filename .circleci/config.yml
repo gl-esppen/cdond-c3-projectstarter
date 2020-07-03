@@ -1,16 +1,5 @@
 version: 2.1
 
-commands:
-  destroy_environment:
-    steps:
-      - run:
-          name: Destroy environment
-          command: |
-            aws cloudformation delete-stack --stack-name network-stack
-            aws cloudformation delete-stack --stack-name backend-stack
-            aws cloudformation delete-stack --stack-name cloudfront-stack
-            aws cloudformation delete-stack --stack-name frontend-stack
-
 jobs:
   create_infrastructure:
       docker:
@@ -45,9 +34,9 @@ jobs:
               aws cloudformation deploy \
                 --template-file frontend.yml \
                 --stack-name frontend-stack
-        - destroy_environment:
-            when: on_fail
+
 
 workflows:
   build-test-and-approval-deploys:
+    jobs:
       - create_infrastructure
