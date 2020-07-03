@@ -46,6 +46,6 @@ workflows:
   default:
     jobs:
       - hello-world
-      - frontend-build
-      - backend-build
+      - build-frontend
+      - build-backend
 
