@@ -42,10 +42,34 @@ jobs:
               npm install
               npm audit --audit-level=critical || true
 
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd frontend
+              npm install
+              npm run test
+
+  test-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd frontend
+              npm install
+              npm run test
+
 workflows:
   default:
     jobs:
       - hello-world
       - build-frontend
       - build-backend
+      - test-frontend
+      - test-backend
 
