@@ -1,6 +1,94 @@
 version: 2.1
 
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          command: |
+            aws cloudformation delete-stack --stack-name network-stack
+            aws cloudformation delete-stack --stack-name backend-stack
+            aws cloudformation delete-stack --stack-name cloudfront-stack
+            aws cloudformation delete-stack --stack-name frontend-stack
+
 jobs:
+  hello-world:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Say Hello
+          command: |
+            echo "Hello World"
+
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0 
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Build Front-End
+          command: |
+            cd frontend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
+
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0 
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Scan backend dependencies
+          command: |
+              cd backend
+              npm install
+              npm audit --audit-level=critical || true
+
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd frontend
+              npm install
+              npm run test
+
+  test-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd backend
+              npm install
+              npm run test
+
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd backend
+              npm audit fix --audit-level=critical --force
+      - run:
+          command: |
+              cd frontend
+              npm audit fix --audit-level=critical --force
+
   create_infrastructure:
       docker:
         - image: amazon/aws-cli
@@ -35,7 +123,38 @@ jobs:
                 --template-file cloudfront.yml \
                 --stack-name cloudfront-stack
 
+  get_ec2:
+      docker:
+        - image: amazon/aws-cli
+      steps:
+        - checkout
+        - run:
+            name: "Saving EC2 into inventory for Ansible"
+            command: |
+              aws ec2 describe-instances \
+                --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --output text >> ansible/inventory
+
+  configure_infrastructure:
+      docker:
+        - image: python:3.7-alpine3.11
+      steps:
+        - checkout
+        - add_ssh_keys:
+            fingerprints: ["ce:aa:95:32:b7:5b:24:36:05:81:38:d2:37:3e:d9:05"]
+        - run:
+            name: "Install dependencies"
+            command: |
+              apk add --update ansible
+        - run:
+            name: Configure server
+            command: |
+              cd ansible
+              ansible-playbook -i inventory main.yml
+             
 workflows:
   build-test-and-approval-deploys:
     jobs:
       - create_infrastructure
+      - get_ec2
+      - configure_infrastructure
