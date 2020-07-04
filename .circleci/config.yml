@@ -100,7 +100,7 @@ jobs:
               cd files
               aws cloudformation deploy \
                 --template-file network.yml \
-                --stack-name network-stack 
+                --stack-name networking-stack 
         - run:
             name: Deploys the Backend
             command: |

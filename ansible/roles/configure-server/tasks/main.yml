@@ -21,16 +21,15 @@
 
 - name: Creates directory
   file:
-    path: ~/{{ http_host }}
+    path: ~/ci_test
     state: directory
 
 - name: Copy index test page
   template:
     src: "files/index.js"
-    dest: "~/{{ http_host }}/index.js"
+    dest: "~/ci_test/index.js"
 
 - name: "Executing node"
   shell: |
     npm install
-    export ENVIRONMENT=production
     pm2 start index.js
