@@ -158,9 +158,4 @@ workflows:
   build-test-and-approval-deploys:
     jobs:
       - create_infrastructure
-      - get_ec2:
-          requires:
-            - create_infrastructure
-      - configure_infrastructure:
-          requires:
-            - get_ec2
+      - configure_infrastructure
