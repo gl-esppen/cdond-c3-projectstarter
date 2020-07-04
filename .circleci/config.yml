@@ -152,7 +152,7 @@ jobs:
             name: Configure server
             command: |
               cd ansible
-              ansible-playbook -i inventory main.yml
+              ansible-playbook -i inventory.txt main.yml
              
 workflows:
   build-test-and-approval-deploys:
