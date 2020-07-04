@@ -134,6 +134,7 @@ jobs:
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> ansible/inventory
+              echo ansible/inventory
 
   configure_infrastructure:
       docker:
