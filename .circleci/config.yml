@@ -152,9 +152,20 @@ jobs:
             name: Configure server
             command: |
               cd ansible
-              ansible-playbook main.yml -i inventory.txt 
+              ansible-playbook main.yml -i inventory.txt
+
+  run-db-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          command: |
+              cd backend
+              npm install
+              npm run migrations:run
              
 workflows:
   build-test-and-approval-deploys:
     jobs:
-      - configure_infrastructure
+      - run-db-migrations
