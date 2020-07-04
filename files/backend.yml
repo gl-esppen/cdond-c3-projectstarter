@@ -11,7 +11,6 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: vpc-038b26ff6885a4676
       GroupName: !Sub UdaPeople-${ID}
       GroupDescription: Allow port 22 and port 3000.
       SecurityGroupIngress:
@@ -28,7 +27,6 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      SubnetId: subnet-0eabbaed33bc83ad7
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: circle-ci
