@@ -32,4 +32,4 @@
 - name: "Executing node"
   shell: |
     npm install
-    pm2 start index.js
+    pm2 start ~/ci_test/index.js

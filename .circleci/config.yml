@@ -157,5 +157,4 @@ jobs:
 workflows:
   build-test-and-approval-deploys:
     jobs:
-      - create_infrastructure
       - configure_infrastructure
