@@ -28,6 +28,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
+      SubnetId: subnet-0eabbaed33bc83ad7
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: circle-ci
