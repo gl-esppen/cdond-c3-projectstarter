@@ -168,4 +168,5 @@ jobs:
 workflows:
   build-test-and-approval-deploys:
     jobs:
+      - analyze
       - run-db-migrations
