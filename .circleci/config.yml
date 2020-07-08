@@ -119,10 +119,9 @@ jobs:
             command: |
               cd .circleci/ansible
               echo "[web]" > inventory.txt
-              inventory_address=$(aws ec2 describe-instances \
+              aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --output text) 
-              echo $inventory_address >> inventory.txt
+                --output text >> inventory.txt
               sed -i '$ s/$/ ansible_user=ubuntu/' inventory.txt
               cat inventory.txt
 
@@ -161,6 +160,7 @@ workflows:
 #      - create_infrastructure
 #          requires:
 #            - analyze
-      - configure_infrastructure
-#          requires:
-#            - create_infrastructure
+      - get_ec2
+      - configure_infrastructure:
+          requires:
+            - get_ec2
