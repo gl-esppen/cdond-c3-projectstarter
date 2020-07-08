@@ -18,18 +18,3 @@
     global: yes
     production: yes
     state: present
-
-- name: Creates directory
-  file:
-    path: ~/ci_test
-    state: directory
-
-- name: Copy index test page
-  template:
-    src: "files/index.js"
-    dest: "~/ci_test/index.js"
-
-- name: "Executing node"
-  shell: |
-    npm install
-    pm2 start ~/ci_test/index.js -f 
