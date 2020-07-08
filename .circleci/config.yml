@@ -123,7 +123,7 @@ jobs:
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text) 
               echo $inventory_address >> inventory.txt
-              sed -i '$ s/$/ ansible_user=ubuntu/' inventory.txt
+              pwd
               cat inventory.txt
 
   configure_infrastructure:
@@ -137,6 +137,7 @@ jobs:
             name: "Install dependencies"
             command: |
               apk add --update ansible
+              apk add openssh-client
         - run:
             name: Configure server
             command: |
