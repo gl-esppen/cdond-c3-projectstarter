@@ -108,8 +108,7 @@ jobs:
               aws cloudformation deploy \
                 --template-file ./.circleci/files/cloudfront.yml \
                 --stack-name cloudfront-stack
-        - destroy_environment:
-            when: on_fail
+
 
   get_ec2:
       docker:
