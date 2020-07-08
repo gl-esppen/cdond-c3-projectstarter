@@ -119,9 +119,11 @@ jobs:
             name: "Saving EC2 into inventory for Ansible"
             command: |
               cd ./.circleci/files/ansible
+              echo "[web]" > inventory.txt
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> inventory.txt
+              sed -i '$ s/$/ ansible_user=ubuntu/' inventory.txt
               cat inventory.txt
 
   configure_infrastructure:

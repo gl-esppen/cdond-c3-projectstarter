@@ -1,5 +1,0 @@
-[default]
-3.90.82.138
-
-[web]
-ec2-3-90-82-138.compute-1.amazonaws.com
