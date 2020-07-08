@@ -1,0 +1,4 @@
+[default]
+100.25.201.52
+[web]
+ec2-100-25-201-52.compute-1.amazonaws.com
