@@ -109,7 +109,6 @@ jobs:
                 --template-file ./.circleci/files/cloudfront.yml \
                 --stack-name cloudfront-stack
 
-
   get_ec2:
       docker:
         - image: amazon/aws-cli
@@ -140,7 +139,7 @@ jobs:
         - run:
             name: Configure server
             command: |
-              cd ./.circleci/files/ansible
+              cd .circleci/ansible
               ansible-playbook main.yml -i inventory.txt
              
 workflows:
