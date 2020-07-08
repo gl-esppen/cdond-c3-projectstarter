@@ -12,16 +12,6 @@ commands:
             aws cloudformation delete-stack --stack-name frontend-stack
 
 jobs:
-  hello-world:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Say Hello
-          command: |
-            echo "Hello World"
-
   build-frontend:
     docker:
       - image: circleci/node:13.8.0 
@@ -97,31 +87,29 @@ jobs:
         - run:
             name: Deploys the Network 
             command: |
-              cd files
               aws cloudformation deploy \
-                --template-file network.yml \
-                --stack-name networking-stack 
+                --template-file ./.circleci/files/network.yml \
+                --stack-name network-stack 
         - run:
             name: Deploys the Backend
             command: |
-              cd files
               aws cloudformation deploy \
-                --template-file backend.yml \
+                --template-file ./.circleci/files/backend.yml \
                 --stack-name backend-stack
         - run:
             name: Deploys the Frontend
             command: |
-              cd files
               aws cloudformation deploy \
-                --template-file frontend.yml \
+                --template-file ./.circleci/files/frontend.yml \
                 --stack-name frontend-stack
         - run:
             name: Deploys the Cloudfront
             command: |
-              cd files
               aws cloudformation deploy \
-                --template-file cloudfront.yml \
+                --template-file ./.circleci/files/cloudfront.yml \
                 --stack-name cloudfront-stack
+        - destroy_environment:
+            when: on_fail
 
   get_ec2:
       docker:
@@ -131,7 +119,7 @@ jobs:
         - run:
             name: "Saving EC2 into inventory for Ansible"
             command: |
-              cd ansible
+              cd ./.circleci/files/ansible
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> inventory.txt
@@ -151,22 +139,27 @@ jobs:
         - run:
             name: Configure server
             command: |
-              cd ansible
+              cd ./.circleci/files/ansible
               ansible-playbook main.yml -i inventory.txt
-
-  run-db-migrations:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          command: |
-              cd backend
-              npm install
-              npm run migrations
              
 workflows:
   build-test-and-approval-deploys:
     jobs:
-      - analyze
-      - run-db-migrations
+#      - build-frontend
+#      - build-backend
+#      - test-frontend:
+#          requires:
+#            - build-frontend
+#      - test-backend:
+#          requires:
+#            - build-backend
+#      - analyze:
+#          requires:
+#            - test-frontend
+#            - test-backend
+#      - create_infrastructure:
+#          requires:
+#            - analyze
+      - configure_infrastructure
+#          requires:
+#           - create_infrastructure
