@@ -1,10 +1,11 @@
 ---
 - name: "UdaPeople Configurations"
   hosts: web
-  user: ubuntu 
+  user: ubuntu
+ 
   environment:
     # Get the environment variables from CircleCI and add to the instance
-    TYPEORM_MIGRATIONS: "{{ ansible_env.TYPEORM_MIGRATIONS) }}"
+    TYPEORM_MIGRATIONS: "{{ lookup('env','TYPEORM_MIGRATIONS') }}"
     TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
     TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
     TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
