@@ -24,4 +24,5 @@
 - name: Run node migrations
   shell: |
     cd /home/ubuntu/backend
+    echo $TYPEORM_HOST
     npm run migrations
