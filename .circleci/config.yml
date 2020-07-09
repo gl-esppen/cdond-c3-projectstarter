@@ -137,8 +137,6 @@ jobs:
             name: "Install dependencies"
             command: |
               apk add --update ansible
-              apk add openssh-client
-              ssh -o StrictHostKeyChecking=no
         - run:
             name: Configure server
             command: |
