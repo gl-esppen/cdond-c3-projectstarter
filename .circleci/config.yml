@@ -138,9 +138,11 @@ jobs:
             command: |
               apk add --update ansible
               apk add openssh-client
+              ssh -o StrictHostKeyChecking=no
         - run:
             name: Configure server
             command: |
+              echo "ec2-54-88-222-112.compute-1.amazonaws.com,54.88.222.112 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEW4hzELHmuDWqi2YfV1xwW4WW/Akaeum5ndnGyKeoCC1T/+Bd4yWyVxGiLg/BkeABNCTeQGz8cOx3RdC1LudL4=" >> ~/.ssh/known_hosts
               cd .circleci/ansible
               ansible-playbook main.yml -i inventory.txt
              
