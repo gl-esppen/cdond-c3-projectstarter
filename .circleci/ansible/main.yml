@@ -16,7 +16,7 @@
     ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}"
     #API_URL: "{{ lookup('env','API_URL') }}"
   tasks:
-    - debug: msg="{{ TYPEORM_HOST }}
+    - debug: msg="{{ TYPEORM_HOST }}"
   gather_facts: true
 
   roles:
