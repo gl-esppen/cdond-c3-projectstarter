@@ -156,15 +156,15 @@ jobs:
               cd .circleci/ansible
               ansible-playbook main.yml -i inventory.txt
 
-frontend-s3-config:
-      docker:
-        - image: amazon/aws-cli
-      steps:
-        - checkout
-        - run:
-          name: "Copying the FrontEnd files to S3"
-          command: |
-              aws s3 cp frontend/dist s3://udapeople-websiteprod/ --recursive
+  frontend-s3-config:
+        docker:
+          - image: amazon/aws-cli
+        steps:
+          - checkout
+          - run:
+              name: "Copying the FrontEnd files to S3"
+              command: |
+                aws s3 cp frontend/dist s3://udapeople-websiteprod/ --recursive
 
 
 workflows:
