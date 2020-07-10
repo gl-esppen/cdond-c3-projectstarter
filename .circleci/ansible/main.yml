@@ -15,8 +15,7 @@
     TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
     ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}"
     #API_URL: "{{ lookup('env','API_URL') }}"
-  tasks:
-    - debug: msg="{{ TYPEORM_HOST }}"
+
   gather_facts: true
 
   roles:
