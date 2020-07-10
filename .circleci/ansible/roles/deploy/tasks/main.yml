@@ -21,8 +21,7 @@
     cd /home/ubuntu/backend
     npm run build
 
-- name: Run node migrations
+- name: Run node migrations and saving to MemStash.io
   shell: |
     cd /home/ubuntu/backend
-    echo $TYPEORM_HOST
-    npm run migrations
+    npm run migrations > migrations.txt

@@ -11,6 +11,7 @@ commands:
             aws cloudformation delete-stack --stack-name cloudfront-stack
             aws cloudformation delete-stack --stack-name frontend-stack
           when: on_fail
+  
 
 jobs:
   build-frontend:
@@ -110,31 +111,31 @@ jobs:
                 --template-file ./.circleci/files/cloudfront.yml \
                 --stack-name cloudfront-stack
 
-  get_ec2:
-      docker:
-        - image: amazon/aws-cli
-      steps:
-        - checkout
-        - run:
-            name: "Saving EC2 into inventory for Ansible"
-            command: |
-              cd .circleci/ansible
-              echo "[web]" > inventory.txt
-              inventory_address=$(aws ec2 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicDnsName' \
-                --output text) 
-              echo $inventory_address >> inventory.txt
-              pwd
-              cat inventory.txt
-        - run:
-            name: Install tar/gzip utility
-            command: |
-              yum -y install tar
-              yum -y install gzip
-        - persist_to_workspace:
-            root: .circleci/ansible/        
-            paths:
-              - inventory.txt
+#  get_ec2:
+#      docker:
+#        - image: amazon/aws-cli
+#      steps:
+#        - checkout
+#        - run:
+#            name: "Saving EC2 into inventory for Ansible"
+#            command: |
+#              cd .circleci/ansible
+#              echo "[web]" > inventory.txt
+#              inventory_address=$(aws ec2 describe-instances \
+#                --query 'Reservations[*].Instances[*].PublicDnsName' \
+#                --output text) 
+#              echo $inventory_address >> inventory.txt
+#              pwd
+#              cat inventory.txt
+#        - run:
+#            name: Install tar/gzip utility
+#            command: |
+#              yum -y install tar
+#              yum -y install gzip
+#        - persist_to_workspace:
+#            root: .circleci/ansible/        
+#            paths:
+#              - inventory.txt
 
   configure_infrastructure:
       docker:
@@ -154,7 +155,18 @@ jobs:
               printenv >> "backend/.env"
               cd .circleci/ansible
               ansible-playbook main.yml -i inventory.txt
-             
+
+frontend-s3-config:
+      docker:
+        - image: amazon/aws-cli
+      steps:
+        - checkout
+        - run:
+          name: "Copying the FrontEnd files to S3"
+          command: |
+              aws s3 cp frontend/dist s3://udapeople-websiteprod/ --recursive
+
+
 workflows:
   build-test-and-approval-deploys:
     jobs:
@@ -173,7 +185,8 @@ workflows:
 #      - create_infrastructure
 #          requires:
 #            - analyze
-      - get_ec2
-      - configure_infrastructure:
-          requires:
-            - get_ec2
+#      - get_ec2
+#      - configure_infrastructure:
+#          requires:
+#            - get_ec2
+      - frontend-s3-config
