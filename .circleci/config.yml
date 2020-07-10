@@ -168,7 +168,7 @@ workflows:
 #      - create_infrastructure
 #          requires:
 #            - analyze
-#      - get_ec2
-      - configure_infrastructure
-#          requires:
-#            - get_ec2
+      - get_ec2
+      - configure_infrastructure:
+          requires:
+            - get_ec2
