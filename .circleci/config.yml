@@ -6,9 +6,9 @@ commands:
       - run:
           name: "Installing AWS CLI to get EC2 endpoints"
           command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            apk add --no-cache python py-pip #Command only for other docker instances but python
+            pip install awscli
+            aws --version
   destroy_environment:
     steps:
       - run:
