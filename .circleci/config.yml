@@ -154,7 +154,6 @@ jobs:
             fingerprints: ["ce:aa:95:32:b7:5b:24:36:05:81:38:d2:37:3e:d9:05"]
         
         - install_awscli
-
         - run:
             name: "Install dependencies"
             command: |
