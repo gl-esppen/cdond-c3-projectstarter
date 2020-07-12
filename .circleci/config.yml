@@ -171,15 +171,12 @@ jobs:
           - checkout
           - install_awscli_node
           - run:
-              name: "Getting the API URL"
+              name: "Build Front-End"
               command: |
                 API_HOST=$(aws ec2 --region us-east-1 describe-instances \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --output text)
                 echo $API_HOST
-          - run:
-              name: "Build Front-End"
-              command: |
                 cd frontend
                 API_URL=http://$API_HOST:3030
                 echo $API_URL
