@@ -221,6 +221,6 @@ workflows:
 #      - frontend-s3-config:
 #          requires:
 #            - configure_infrastructure
-      - cloudfront-invalidation:
-          requires:
-            - frontend-s3-config
+      - cloudfront-invalidation
+#          requires:
+#            - frontend-s3-config
