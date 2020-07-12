@@ -175,7 +175,8 @@ jobs:
               command: |
                 API_HOST=$(aws ec2 --region us-east-1 describe-instances \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                  --output text) 
+                  --output text)
+                echo $API_HOST
           - run:
               name: "Build Front-End"
               command: |
