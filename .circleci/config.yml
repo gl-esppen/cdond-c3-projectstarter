@@ -1,12 +1,20 @@
 version: 2.1
 
 commands:
-  install_awscli:
+  install_awscli_node:
+    steps:
+      - run:
+          name: "Installing AWS CLI in the Node containers"
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+  install_awscli_python:
     steps:
       - run:
           name: "Installing AWS CLI to get EC2 endpoints"
           command: |
-            apk add --no-cache python py-pip #Command only for other docker instances but python
+            apk add --no-cache python py-pip
             pip install awscli
             aws --version
   destroy_environment:
@@ -161,9 +169,9 @@ jobs:
           - image: circleci/node:13.8.0
         steps:
           - checkout
-          - install_awscli
+          - install_awscli_node
           - run:
-              name: Build Front-End
+              name: "Build Front-End"
               command: |
                 cd frontend
                 npm install
