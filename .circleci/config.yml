@@ -178,9 +178,8 @@ jobs:
                   --output text)
                 echo $API_HOST
                 cd frontend
-                API_URL=http://$API_HOST:3030
+                export API_URL=http://$API_HOST:3030
                 echo $API_URL
-                export $API_URL
                 npm install
                 npm run build
           - run:
