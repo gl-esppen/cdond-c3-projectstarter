@@ -174,7 +174,7 @@ jobs:
               name: "Getting the API URL"
               command: |
                 API_HOST=$(aws ec2 --region us-east-1 describe-instances \
-                  --query 'Reservations[*].Instances[*].PublicIpAddress'
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --output text) 
           - run:
               name: "Build Front-End"
