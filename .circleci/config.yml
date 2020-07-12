@@ -101,7 +101,7 @@ jobs:
 
 
 # JOBS TO CREATE AND CONFIGURE THE INFRASCTUCTURE 
-  create_infrastructure:
+  create-infrastructure:
       docker:
         - image: amazon/aws-cli
       steps:
@@ -132,7 +132,7 @@ jobs:
                 --stack-name cloudfront-stack
         - destroy_environment
 
-  configure_infrastructure:
+  configure-infrastructure:
       docker:
         - image: python:3.7-alpine3.11
       steps:
@@ -187,6 +187,15 @@ jobs:
               command: |
                 aws s3 cp frontend/dist s3://udapeople-websiteprod/ --recursive
 
+  cloudfront-invalidation:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: "Invalidating CloudFront files"
+          command: | 
+            aws cloudfront create-invalidation --distribution-id E2HDRR6VUBEYQM --paths "/*"
 
 workflows:
   build-test-and-approval-deploys:
@@ -203,10 +212,15 @@ workflows:
 #          requires:
 #            - test-frontend
 #            - test-backend
-#      - create_infrastructure
+#      - create-infrastructure
 #          requires:
 #            - analyze
-#      - configure_infrastructure
+#      - configure-infrastructure
 #          requires:
-#            - create_infrastructure
-      - frontend-s3-config
+#            - create-infrastructure
+#      - frontend-s3-config:
+#          requires:
+#            - configure_infrastructure
+      - cloudfront-invalidation:
+          requires:
+            - frontend-s3-config
