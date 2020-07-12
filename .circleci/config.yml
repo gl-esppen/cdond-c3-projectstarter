@@ -163,7 +163,7 @@ jobs:
             command: |
               cd .circleci/ansible
               echo "[web]" > inventory.txt
-              inventory_address=$(aws ec2 describe-instances \
+              inventory_address=$(aws ec2 --region us-east-1 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicDnsName' \
                 --output text) 
               echo $inventory_address >> inventory.txt
