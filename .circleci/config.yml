@@ -272,9 +272,9 @@ workflows:
 #      - create-infrastructure
 #          requires:
 #            - analyze
-      - configure-infrastructure:
-          requires:
-            - create-infrastructure
+      - configure-infrastructure
+#          requires:
+#            - create-infrastructure
       - frontend-s3-config:
           requires:
             - configure_infrastructure
