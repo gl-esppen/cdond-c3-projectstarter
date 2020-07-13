@@ -27,8 +27,36 @@ commands:
             aws cloudformation delete-stack --stack-name cloudfront-stack
             aws cloudformation delete-stack --stack-name frontend-stack
           when: on_fail
-#  db_rollback:
-  
+  destroy_backend_frontend:
+    steps:
+      - run:
+          name: Destroy environment
+          command: |
+            aws s3 rb s3://udapeople-websiteprod/ --force
+            aws cloudformation delete-stack --stack-name frontend-stack
+            aws cloudformation delete-stack --stack-name backend-stack
+          when: on_fail  
+  db_rollback:
+    steps:
+      - run:
+          name: "DB Rollback"
+          command: |
+            cd backend
+            npm install
+            if 
+              (( $( curl -H "token: e13a6cc4-3f08-4da7-9177-216b218d0341" --request GET https://api.memstash.io/values/migration_status ) == 0 )) ; \
+            then 
+              npm run migrations:revert
+              echo "Reverting migrations"
+            else
+              echo "No migration to revert"
+            fi
+          when: on_fail
+      - run:
+          when: on_fail
+          name: Prevents the workflow from continuing
+          command: |
+            circleci-agent step halt
 
 jobs:
 # JOBS TO BUILD, TEST AND ANALYZE THE FRONTEND AND BACKEND
@@ -221,7 +249,9 @@ jobs:
                   return 1
                 else
                   return 0
-                fi         
+                fi
+      - destroy_backend_frontend
+      - db_rollback   
 
 
 workflows:
@@ -242,13 +272,15 @@ workflows:
 #      - create-infrastructure
 #          requires:
 #            - analyze
-#      - configure-infrastructure
-#          requires:
-#            - create-infrastructure
-#      - frontend-s3-config:
-#          requires:
-#            - configure_infrastructure
-#      - cloudfront-invalidation:
-#          requires:
-#            - frontend-s3-config
-      - smoke-test
+      - configure-infrastructure:
+          requires:
+            - create-infrastructure
+      - frontend-s3-config:
+          requires:
+            - configure_infrastructure
+      - cloudfront-invalidation:
+          requires:
+            - frontend-s3-config
+      - smoke-test:
+          requires:
+            - cloudfront-invalidation
