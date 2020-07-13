@@ -277,7 +277,7 @@ workflows:
 #            - create-infrastructure
       - frontend-s3-config:
           requires:
-            - configure_infrastructure
+            - configure-infrastructure
       - cloudfront-invalidation:
           requires:
             - frontend-s3-config
