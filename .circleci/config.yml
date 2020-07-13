@@ -151,7 +151,8 @@ jobs:
               cd .circleci/ansible
               echo "[web]" > inventory.txt
               inventory_address=$(aws ec2 --region us-east-1 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicDnsName' \
+                --filters "Name=tag:Name,Values=backend-InstanceStack" \
+                --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text) 
               echo $inventory_address >> inventory.txt
               pwd
@@ -197,6 +198,32 @@ jobs:
           command: | 
             aws cloudfront create-invalidation --distribution-id E2HDRR6VUBEYQM --paths "/*"
 
+  smoke-test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - install_awscli_node
+      - run:
+          name: "Smoke Test on Backend"
+          command: |
+                export API_HOST=$(aws ec2 --region us-east-1 describe-instances \
+                  --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                  --output text)
+                echo $API_HOST
+                curl "http://${API_HOST}:3030/api/status"
+      - run:
+          name: "Smoke Test on Frontend"
+          command: |
+                URL="http://udapeople-websiteprod.s3.amazonaws.com/index.html#/employees"
+                if curl -s ${URL} | grep "Welcome"
+                then
+                  return 1
+                else
+                  return 0
+                fi         
+
+
 workflows:
   build-test-and-approval-deploys:
     jobs:
@@ -221,6 +248,7 @@ workflows:
 #      - frontend-s3-config:
 #          requires:
 #            - configure_infrastructure
-      - cloudfront-invalidation
+#      - cloudfront-invalidation:
 #          requires:
 #            - frontend-s3-config
+      - smoke-test
